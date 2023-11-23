@@ -12,22 +12,73 @@ int main()
 	// Create our window and world with gravity 0,1
 	RenderWindow window(VideoMode(800, 600), "Bounce");
 	World world(Vector2f(0, 1));
+	
+	
 	// Create the ball
 	PhysicsCircle ball;
 	ball.setCenter(Vector2f(400, 300));
 	ball.setRadius(20);
+	ball.applyImpulse(Vector2f(0,.5));
 	world.AddPhysicsBody(ball);
+
+
 	// Create the floor
 	PhysicsRectangle floor;
 	floor.setSize(Vector2f(800, 20));
 	floor.setCenter(Vector2f(400, 590));
 	floor.setStatic(true);
 	world.AddPhysicsBody(floor);
+
+	// Create the right wall
+	PhysicsRectangle wallRight;
+	wallRight.setSize(Vector2f(20, 600));
+	wallRight.setCenter(Vector2f(750, 300));
+	wallRight.setStatic(true);
+	world.AddPhysicsBody(wallRight);
+
+	// Creat the left wall
+	PhysicsRectangle wallLeft;
+	wallLeft.setSize(Vector2f(20, 600));
+	wallLeft.setCenter(Vector2f(50, 300));
+	wallLeft.setStatic(true);
+	world.AddPhysicsBody(wallLeft);
+
+	// Create the ceiling
+	PhysicsRectangle ceiling;
+	ceiling.setSize(Vector2f(800, 20));
+	ceiling.setCenter(Vector2f(400, 10));
+	ceiling.setStatic(true);
+	world.AddPhysicsBody(ceiling);
+
+	// create the obstacle
+	PhysicsRectangle obstacle;
+	obstacle.setSize(Vector2f(100, 20));
+	obstacle.setCenter(Vector2f(400, 282));
+	obstacle.setStatic(true);
+	world.AddPhysicsBody(obstacle);
+
+
 	int thudCount(0);
+	int bangCount(0);
+
 	floor.onCollision = [&thudCount](PhysicsBodyCollisionResult result) {
 		cout << "thud " << thudCount << endl;
 		thudCount++;
 		};
+
+
+	obstacle.onCollision = [&bangCount](PhysicsBodyCollisionResult result) {
+		cout << "Bang! " << bangCount << endl;
+		bangCount++;
+			if (bangCount == 3)
+		{
+			exit(0);
+		}
+		};
+
+
+
+
 	Clock clock;
 	Time lastTime(clock.getElapsedTime());
 	while (true) {
@@ -42,6 +93,11 @@ int main()
 		window.clear(Color(0, 0, 0));
 		window.draw(ball);
 		window.draw(floor);
+		window.draw(wallRight);
+		window.draw(ceiling);
+		window.draw(obstacle);
+		window.draw(wallLeft);
+
 		window.display();
 	}
 }
